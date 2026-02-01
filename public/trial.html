@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start Your 7-Day Free Trial - AI Meeting Automation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-white">
+    <!-- Header -->
+    <header class="glass-effect sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-robot text-3xl"></i>
+                    <h1 class="text-2xl font-bold">AI Meeting Automation</h1>
+                </div>
+                <nav class="hidden md:flex space-x-6">
+                    <a href="#features" class="hover:text-gray-300">Features</a>
+                    <a href="#pricing" class="hover:text-gray-300">Pricing</a>
+                    <a href="#demo" class="hover:text-gray-300">Demo</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="container mx-auto px-6 py-16">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+                <div class="inline-flex items-center bg-green-500 bg-opacity-20 rounded-full px-4 py-2 mb-6">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    <span class="text-sm">7-Day Free Trial - No Credit Card Required</span>
+                </div>
+                
+                <h2 class="text-5xl font-bold mb-6">
+                    Transform Your Meetings into<br>
+                    <span class="text-yellow-400">Automated Tasks</span>
+                </h2>
+                
+                <p class="text-xl mb-8 text-gray-300">
+                    Join Google Meet automatically and watch as AI extracts action items, 
+                    categorizes them by department, and creates tasks instantly.
+                </p>
+
+                <div class="flex flex-col sm:flex-row gap-4 mb-8">
+                    <button onclick="showTrialForm()" class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-4 px-8 rounded-lg text-lg transition-colors">
+                        <i class="fas fa-rocket mr-2"></i>Start Free Trial
+                    </button>
+                    <button onclick="scrollToDemo()" class="glass-effect hover:bg-white hover:bg-opacity-20 font-bold py-4 px-8 rounded-lg text-lg transition-colors">
+                        <i class="fas fa-play mr-2"></i>Watch Demo
+                    </button>
+                </div>
+
+                <div class="flex items-center space-x-6 text-sm">
+                    <div class="flex items-center">
+                        <i class="fas fa-check text-green-400 mr-2"></i>
+                        <span>No setup required</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-check text-green-400 mr-2"></i>
+                        <span>Cancel anytime</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-check text-green-400 mr-2"></i>
+                        <span>Full features</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative">
+                <div class="glass-effect rounded-xl p-8 animate-float">
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                            <span class="text-sm">Live Demo Running</span>
+                        </div>
+                        
+                        <div class="bg-black bg-opacity-30 rounded-lg p-4">
+                            <div class="text-xs text-gray-400 mb-2">Google Meet: Product Development Meeting</div>
+                            <div class="space-y-2">
+                                <div class="flex items-start space-x-2">
+                                    <span class="text-xs text-blue-400">Sarah:</span>
+                                    <span class="text-sm">We need to optimize the protein formulation...</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <i class="fas fa-arrow-right text-yellow-400 text-xs"></i>
+                                    <span class="text-xs text-green-400">✅ Task Created: "Optimize protein formulation"</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-2 text-center">
+                            <div class="bg-black bg-opacity-30 rounded p-2">
+                                <div class="text-2xl font-bold text-green-400">24</div>
+                                <div class="text-xs">Tasks Created</div>
+                            </div>
+                            <div class="bg-black bg-opacity-30 rounded p-2">
+                                <div class="text-2xl font-bold text-blue-400">8</div>
+                                <div class="text-xs">Meetings</div>
+                            </div>
+                            <div class="bg-black bg-opacity-30 rounded p-2">
+                                <div class="text-2xl font-bold text-yellow-400">12h</div>
+                                <div class="text-xs">Time Saved</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="container mx-auto px-6 py-16">
+        <h3 class="text-3xl font-bold text-center mb-12">Everything Included in Your Free Trial</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="glass-effect rounded-xl p-6 hover:transform hover:scale-105 transition-transform">
+                <i class="fas fa-video text-4xl text-blue-400 mb-4"></i>
+                <h4 class="text-xl font-bold mb-3">Google Meet Integration</h4>
+                <p class="text-gray-300">Automatically joins meetings and transcribes conversations in real-time.</p>
+            </div>
+            
+            <div class="glass-effect rounded-xl p-6 hover:transform hover:scale-105 transition-transform">
+                <i class="fas fa-brain text-4xl text-purple-400 mb-4"></i>
+                <h4 class="text-xl font-bold mb-3">Smart AI Categorization</h4>
+                <p class="text-gray-300">Automatically categorizes tasks into Design, Procurement, or Production departments.</p>
+            </div>
+            
+            <div class="glass-effect rounded-xl p-6 hover:transform hover:scale-105 transition-transform">
+                <i class="fas fa-tachometer-alt text-4xl text-green-400 mb-4"></i>
+                <h4 class="text-xl font-bold mb-3">Real-Time Dashboard</h4>
+                <p class="text-gray-300">Beautiful dashboard showing live task creation and meeting analytics.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trial Form Modal -->
+    <div id="trialModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="glass-effect rounded-xl p-8 max-w-md w-full mx-4">
+            <h3 class="text-2xl font-bold mb-6">Start Your 7-Day Free Trial</h3>
+            
+            <form id="trialForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-2">Company Name</label>
+                    <input type="text" id="company" required class="w-full px-4 py-2 rounded-lg bg-white bg-opacity-20 border border-white border-opacity-30 focus:outline-none focus:ring-2 focus:ring-yellow-500" placeholder="Nutragenix">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-2">Work Email</label>
+                    <input type="email" id="email" required class="w-full px-4 py-2 rounded-lg bg-white bg-opacity-20 border border-white border-opacity-30 focus:outline-none focus:ring-2 focus:ring-yellow-500" placeholder="you@nutragenix.com">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-2">Select Plan</label>
+                    <select id="plan" class="w-full px-4 py-2 rounded-lg bg-white bg-opacity-20 border border-white border-opacity-30 focus:outline-none focus:ring-2 focus:ring-yellow-500">
+                        <option value="professional">Professional Plan - $299/month</option>
+                        <option value="starter">Starter Plan - $99/month</option>
+                        <option value="enterprise">Enterprise Plan - $799/month</option>
+                    </select>
+                </div>
+                
+                <div class="flex space-x-4">
+                    <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 px-6 rounded-lg flex-1 transition-colors">
+                        <i class="fas fa-rocket mr-2"></i>Start Trial
+                    </button>
+                    <button type="button" onclick="hideTrialForm()" class="glass-effect hover:bg-white hover:bg-opacity-20 font-bold py-3 px-6 rounded-lg transition-colors">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Message -->
+    <div id="successMessage" class="fixed top-20 right-6 glass-effect rounded-lg p-4 hidden">
+        <div class="flex items-center space-x-3">
+            <i class="fas fa-check-circle text-green-400 text-xl"></i>
+            <div>
+                <div class="font-bold">Trial Started Successfully!</div>
+                <div class="text-sm">Check your email for next steps.</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000';
+
+        function showTrialForm() {
+            document.getElementById('trialModal').style.display = 'flex';
+        }
+
+        function hideTrialForm() {
+            document.getElementById('trialModal').style.display = 'none';
+            document.getElementById('trialForm').reset();
+        }
+
+        function scrollToDemo() {
+            document.getElementById('demo').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Handle trial form submission
+        document.getElementById('trialForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                company: document.getElementById('company').value,
+                email: document.getElementById('email').value,
+                plan: document.getElementById('plan').value
+            };
+
+            try {
+                // Setup trial
+                const response = await fetch(`${API_BASE}/trial/setup`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Load sample data for demo
+                    await fetch(`${API_BASE}/trial/sample-data`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            industry: 'Nutrition',
+                            meetings: 5
+                        })
+                    });
+
+                    hideTrialForm();
+                    showSuccessMessage();
+                    
+                    // Redirect to dashboard after 2 seconds
+                    setTimeout(() => {
+                        window.open('/dashboard.html', '_blank');
+                    }, 2000);
+                } else {
+                    alert('Failed to start trial. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error starting trial:', error);
+                alert('Error starting trial. Please try again.');
+            }
+        });
+
+        function showSuccessMessage() {
+            const message = document.getElementById('successMessage');
+            message.classList.remove('hidden');
+            
+            setTimeout(() => {
+                message.classList.add('hidden');
+            }, 5000);
+        }
+
+        // Simulate live demo updates
+        setInterval(() => {
+            const taskCount = document.querySelector('.text-green-400');
+            const meetingCount = document.querySelector('.text-blue-400');
+            
+            if (taskCount && meetingCount) {
+                const currentTasks = parseInt(taskCount.textContent);
+                const currentMeetings = parseInt(meetingCount.textContent);
+                
+                if (Math.random() > 0.7) {
+                    taskCount.textContent = currentTasks + 1;
+                }
+                
+                if (Math.random() > 0.9) {
+                    meetingCount.textContent = currentMeetings + 1;
+                }
+            }
+        }, 3000);
+    </script>
+</body>
+</html>

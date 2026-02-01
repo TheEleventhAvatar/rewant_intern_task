@@ -51,11 +51,89 @@
       "updated": "2026-02-01T13:07:10.797Z",
       "dueDate": "2026-02-08T13:07:10.797Z",
       "source": "AI Automation Engine"
+    },
+    {
+      "id": "28fdb7f64faad62011aedd0eb245dc1a",
+      "name": "Design new packaging",
+      "description": "Automated task from meeting action items. Department: Design",
+      "department": "Design",
+      "priority": "High",
+      "assignee": "Design Team",
+      "status": "To Do",
+      "created": "2026-02-01T13:18:47.534Z",
+      "updated": "2026-02-01T13:18:47.534Z",
+      "dueDate": "2026-02-08T13:18:47.534Z",
+      "source": "AI Automation Engine"
+    },
+    {
+      "id": "8cc7f8f44c296da8d8dceb08624979ba",
+      "name": "Source raw materials",
+      "description": "Automated task from meeting action items. Department: Production",
+      "department": "Production",
+      "priority": "High",
+      "assignee": "Production Team",
+      "status": "To Do",
+      "created": "2026-02-01T13:18:47.846Z",
+      "updated": "2026-02-01T13:18:47.846Z",
+      "dueDate": "2026-02-08T13:18:47.846Z",
+      "source": "AI Automation Engine"
+    },
+    {
+      "id": "d79db9b6e5ce08b95b3815bdb012276d",
+      "name": "Setup production line",
+      "description": "Automated task from meeting action items. Department: Production",
+      "department": "Production",
+      "priority": "High",
+      "assignee": "Production Team",
+      "status": "To Do",
+      "created": "2026-02-01T13:18:47.977Z",
+      "updated": "2026-02-01T13:18:47.977Z",
+      "dueDate": "2026-02-08T13:18:47.977Z",
+      "source": "AI Automation Engine"
+    },
+    {
+      "id": "a7d251a93cce318ff22695e193e2bc25",
+      "name": "We need to finalize the packaging design by next week",
+      "description": "Automated task from meeting action items. Department: Design",
+      "department": "Design",
+      "priority": "High",
+      "assignee": "Design Team",
+      "status": "To Do",
+      "created": "2026-02-01T13:42:36.947Z",
+      "updated": "2026-02-01T13:42:36.947Z",
+      "dueDate": "2026-02-08T13:42:36.947Z",
+      "source": "AI Automation Engine"
+    },
+    {
+      "id": "418805b613bea2abc5f0859e04dcc122",
+      "name": "update the production schedule",
+      "description": "Automated task from meeting action items. Department: Production",
+      "department": "Production",
+      "priority": "High",
+      "assignee": "Production Team",
+      "status": "To Do",
+      "created": "2026-02-01T13:42:40.939Z",
+      "updated": "2026-02-01T13:42:40.940Z",
+      "dueDate": "2026-02-08T13:42:40.940Z",
+      "source": "AI Automation Engine"
+    },
+    {
+      "id": "698f0fb7b9bbd9ba862729434967baa6",
+      "name": "Design team should review the mockups",
+      "description": "Automated task from meeting action items. Department: Design",
+      "department": "Design",
+      "priority": "High",
+      "assignee": "Design Team",
+      "status": "To Do",
+      "created": "2026-02-01T13:42:44.807Z",
+      "updated": "2026-02-01T13:42:44.807Z",
+      "dueDate": "2026-02-08T13:42:44.807Z",
+      "source": "AI Automation Engine"
     }
   ],
   "metadata": {
     "created": "2026-02-01T13:07:10.449Z",
-    "lastUpdated": "2026-02-01T13:07:10.797Z",
-    "totalTasks": 4
+    "lastUpdated": "2026-02-01T13:42:44.807Z",
+    "totalTasks": 10
   }
 }

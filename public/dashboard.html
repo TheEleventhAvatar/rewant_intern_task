@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Automation Engine Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+        .animate-pulse-slow {
+            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .task-card {
+            transition: all 0.3s ease;
+            transform: translateY(0);
+        }
+        .task-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-white">
+    <!-- Header -->
+    <header class="glass-effect sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-robot text-3xl"></i>
+                    <h1 class="text-2xl font-bold">AI Automation Engine</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm">System Status:</span>
+                    <span class="flex items-center">
+                        <span class="animate-pulse-slow w-2 h-2 bg-green-400 rounded-full mr-2"></span>
+                        <span class="text-green-400">Online</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-8">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="glass-effect rounded-xl p-6 task-card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-300">Total Tasks</p>
+                        <p class="text-3xl font-bold" id="totalTasks">0</p>
+                    </div>
+                    <i class="fas fa-tasks text-3xl text-blue-400"></i>
+                </div>
+            </div>
+            <div class="glass-effect rounded-xl p-6 task-card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-300">Design</p>
+                        <p class="text-3xl font-bold" id="designTasks">0</p>
+                    </div>
+                    <i class="fas fa-palette text-3xl text-pink-400"></i>
+                </div>
+            </div>
+            <div class="glass-effect rounded-xl p-6 task-card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-300">Procurement</p>
+                        <p class="text-3xl font-bold" id="procurementTasks">0</p>
+                    </div>
+                    <i class="fas fa-shopping-cart text-3xl text-green-400"></i>
+                </div>
+            </div>
+            <div class="glass-effect rounded-xl p-6 task-card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-300">Production</p>
+                        <p class="text-3xl font-bold" id="productionTasks">0</p>
+                    </div>
+                    <i class="fas fa-industry text-3xl text-yellow-400"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="glass-effect rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold mb-4">Quick Actions</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <button onclick="testWebhook()" class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-semibold transition-colors">
+                    <i class="fas fa-play mr-2"></i>Test Webhook
+                </button>
+                <button onclick="refreshTasks()" class="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg font-semibold transition-colors">
+                    <i class="fas fa-sync mr-2"></i>Refresh Tasks
+                </button>
+                <button onclick="showAddTaskModal()" class="bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-lg font-semibold transition-colors">
+                    <i class="fas fa-plus mr-2"></i>Add Task
+                </button>
+                <button onclick="startGoogleMeetDemo()" class="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-lg font-semibold transition-colors">
+                    <i class="fas fa-video mr-2"></i>Google Meet Demo
+                </button>
+            </div>
+        </div>
+
+        <!-- Charts and Tasks -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Chart -->
+            <div class="glass-effect rounded-xl p-6">
+                <h2 class="text-xl font-bold mb-4">Task Distribution</h2>
+                <canvas id="taskChart" width="400" height="300"></canvas>
+            </div>
+
+            <!-- Recent Tasks -->
+            <div class="glass-effect rounded-xl p-6">
+                <h2 class="text-xl font-bold mb-4">Recent Tasks</h2>
+                <div id="recentTasks" class="space-y-3 max-h-80 overflow-y-auto">
+                    <!-- Tasks will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Activity Feed -->
+        <div class="glass-effect rounded-xl p-6 mt-8">
+            <h2 class="text-xl font-bold mb-4">Live Activity</h2>
+            <div id="activityFeed" class="space-y-2 max-h-40 overflow-y-auto">
+                <!-- Activity will be shown here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Task Modal -->
+    <div id="addTaskModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="glass-effect rounded-xl p-8 max-w-md w-full mx-4">
+            <h3 class="text-xl font-bold mb-4">Add New Task</h3>
+            <form id="addTaskForm">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-2">Meeting Name</label>
+                    <input type="text" id="meetingName" class="w-full px-4 py-2 rounded-lg bg-white bg-opacity-20 border border-white border-opacity-30 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-2">Action Items (one per line)</label>
+                    <textarea id="actionItems" rows="4" class="w-full px-4 py-2 rounded-lg bg-white bg-opacity-20 border border-white border-opacity-30 focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+                </div>
+                <div class="flex space-x-4">
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg font-semibold transition-colors">
+                        <i class="fas fa-plus mr-2"></i>Add Tasks
+                    </button>
+                    <button type="button" onclick="hideAddTaskModal()" class="bg-gray-600 hover:bg-gray-700 px-6 py-2 rounded-lg font-semibold transition-colors">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let taskChart = null;
+        const API_BASE = 'http://localhost:3000';
+
+        // Initialize dashboard
+        async function initDashboard() {
+            await loadTasks();
+            await loadStats();
+            initChart();
+            addActivity('Dashboard initialized', 'system');
+        }
+
+        // Load tasks from API
+        async function loadTasks() {
+            try {
+                const response = await fetch(`${API_BASE}/tasks`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayTasks(data.tasks);
+                    updateStats(data.statistics);
+                }
+            } catch (error) {
+                console.error('Error loading tasks:', error);
+                addActivity('Failed to load tasks', 'error');
+            }
+        }
+
+        // Display tasks in the UI
+        function displayTasks(tasks) {
+            const recentTasksDiv = document.getElementById('recentTasks');
+            recentTasksDiv.innerHTML = '';
+
+            tasks.slice(-10).reverse().forEach(task => {
+                const taskCard = createTaskCard(task);
+                recentTasksDiv.appendChild(taskCard);
+            });
+        }
+
+        // Create task card element
+        function createTaskCard(task) {
+            const div = document.createElement('div');
+            div.className = 'bg-white bg-opacity-10 rounded-lg p-4 hover:bg-opacity-20 transition-all';
+            
+            const priorityColors = {
+                'High': 'text-red-400',
+                'Medium': 'text-yellow-400',
+                'Low': 'text-green-400'
+            };
+
+            const departmentIcons = {
+                'Design': 'fa-palette',
+                'Procurement': 'fa-shopping-cart',
+                'Production': 'fa-industry'
+            };
+
+            div.innerHTML = `
+                <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                        <h4 class="font-semibold">${task.name}</h4>
+                        <div class="flex items-center space-x-4 mt-2 text-sm">
+                            <span class="flex items-center">
+                                <i class="fas ${departmentIcons[task.department]} mr-1"></i>
+                                ${task.department}
+                            </span>
+                            <span class="${priorityColors[task.priority]}">
+                                <i class="fas fa-flag mr-1"></i>
+                                ${task.priority}
+                            </span>
+                            <span class="text-gray-400">
+                                <i class="fas fa-clock mr-1"></i>
+                                ${new Date(task.created).toLocaleTimeString()}
+                            </span>
+                        </div>
+                    </div>
+                    <span class="text-xs bg-green-600 bg-opacity-30 px-2 py-1 rounded">
+                        ${task.status}
+                    </span>
+                </div>
+            `;
+
+            return div;
+        }
+
+        // Update statistics
+        function updateStats(stats) {
+            document.getElementById('totalTasks').textContent = stats.total;
+            document.getElementById('designTasks').textContent = stats.byDepartment.Design || 0;
+            document.getElementById('procurementTasks').textContent = stats.byDepartment.Procurement || 0;
+            document.getElementById('productionTasks').textContent = stats.byDepartment.Production || 0;
+
+            updateChart(stats);
+        }
+
+        // Initialize chart
+        function initChart() {
+            const ctx = document.getElementById('taskChart').getContext('2d');
+            taskChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Design', 'Procurement', 'Production'],
+                    datasets: [{
+                        data: [0, 0, 0],
+                        backgroundColor: [
+                            'rgba(236, 72, 153, 0.8)',
+                            'rgba(34, 197, 94, 0.8)',
+                            'rgba(251, 191, 36, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(236, 72, 153, 1)',
+                            'rgba(34, 197, 94, 1)',
+                            'rgba(251, 191, 36, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: 'white',
+                                padding: 20
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update chart data
+        function updateChart(stats) {
+            if (taskChart) {
+                taskChart.data.datasets[0].data = [
+                    stats.byDepartment.Design || 0,
+                    stats.byDepartment.Procurement || 0,
+                    stats.byDepartment.Production || 0
+                ];
+                taskChart.update();
+            }
+        }
+
+        // Test webhook
+        async function testWebhook() {
+            addActivity('Testing webhook...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/webhook`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        meetingName: 'Demo Meeting',
+                        actionItems: [
+                            'Design new packaging',
+                            'Source raw materials',
+                            'Setup production line'
+                        ]
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    addActivity('Webhook test successful!', 'success');
+                    await loadTasks(); // Refresh tasks
+                } else {
+                    addActivity('Webhook test failed', 'error');
+                }
+            } catch (error) {
+                addActivity('Webhook test error', 'error');
+            }
+        }
+
+        // Refresh tasks
+        async function refreshTasks() {
+            addActivity('Refreshing tasks...', 'info');
+            await loadTasks();
+            addActivity('Tasks refreshed', 'success');
+        }
+
+        // Show add task modal
+        function showAddTaskModal() {
+            document.getElementById('addTaskModal').style.display = 'flex';
+        }
+
+        // Hide add task modal
+        function hideAddTaskModal() {
+            document.getElementById('addTaskModal').style.display = 'none';
+            document.getElementById('addTaskForm').reset();
+        }
+
+        // Add task form submission
+        document.getElementById('addTaskForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const meetingName = document.getElementById('meetingName').value;
+            const actionItemsText = document.getElementById('actionItems').value;
+            const actionItems = actionItemsText.split('\n').filter(item => item.trim());
+
+            addActivity('Adding new tasks...', 'info');
+
+            try {
+                const response = await fetch(`${API_BASE}/webhook`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        meetingName,
+                        actionItems
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    addActivity(`Successfully added ${actionItems.length} tasks`, 'success');
+                    hideAddTaskModal();
+                    await loadTasks();
+                } else {
+                    addActivity('Failed to add tasks', 'error');
+                }
+            } catch (error) {
+                addActivity('Error adding tasks', 'error');
+            }
+        });
+
+        // Google Meet demo
+        async function startGoogleMeetDemo() {
+            addActivity('Starting Google Meet demo...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/meet/demo`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    addActivity('Google Meet demo started! Watch the console...', 'success');
+                    
+                    // Refresh tasks every 3 seconds to show real-time updates
+                    const refreshInterval = setInterval(async () => {
+                        await loadTasks();
+                        await loadStats();
+                    }, 3000);
+
+                    // Stop refreshing after 15 seconds
+                    setTimeout(() => {
+                        clearInterval(refreshInterval);
+                        addActivity('Google Meet demo completed!', 'success');
+                    }, 15000);
+                } else {
+                    addActivity('Google Meet demo failed', 'error');
+                }
+            } catch (error) {
+                addActivity('Google Meet demo error', 'error');
+            }
+        }
+
+        // Add activity to feed
+        function addActivity(message, type) {
+            const feed = document.getElementById('activityFeed');
+            const activity = document.createElement('div');
+            
+            const icons = {
+                'success': 'fa-check-circle text-green-400',
+                'error': 'fa-exclamation-circle text-red-400',
+                'info': 'fa-info-circle text-blue-400',
+                'system': 'fa-cog text-gray-400'
+            };
+
+            const timestamp = new Date().toLocaleTimeString();
+            
+            activity.className = 'flex items-center space-x-2 text-sm';
+            activity.innerHTML = `
+                <i class="fas ${icons[type]}"></i>
+                <span class="text-gray-300">${timestamp}</span>
+                <span>${message}</span>
+            `;
+
+            feed.insertBefore(activity, feed.firstChild);
+
+            // Keep only last 10 activities
+            while (feed.children.length > 10) {
+                feed.removeChild(feed.lastChild);
+            }
+        }
+
+        // Load statistics
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_BASE}/stats`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    updateStats(data.statistics);
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        // Auto-refresh every 30 seconds
+        setInterval(async () => {
+            await loadTasks();
+            await loadStats();
+        }, 30000);
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', initDashboard);
+    </script>
+</body>
+</html>

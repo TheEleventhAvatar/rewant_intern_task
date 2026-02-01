@@ -3,8 +3,11 @@ const express = require('express');
 const fs = require('fs').promises;
 const fsSync = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 const AIService = require('./services/aiService_fallback');
 const ZohoService = require('./services/localTaskService');
+const GoogleMeetService = require('./services/googleMeetService');
+const GoogleMeetProduction = require('./services/googleMeetProduction');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -15,10 +18,21 @@ app.use(express.json());
 // Initialize services
 let aiService;
 let zohoService;
+let googleMeetService;
+let googleMeetProduction;
 
 try {
     aiService = new AIService();
     zohoService = new ZohoService();
+    googleMeetService = new GoogleMeetService();
+    
+    // Initialize production Google Meet service if credentials are available
+    if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+        googleMeetProduction = new GoogleMeetProduction();
+        googleMeetProduction.initializeGoogleAPIs();
+        console.log('Google Meet Production Service initialized');
+    }
+    
     console.log('Services initialized successfully');
 } catch (error) {
     console.error('Error initializing services:', error.message);
@@ -397,6 +411,409 @@ app.post('/webhook', async (req, res) => {
     } catch (error) {
         console.error('Error processing webhook:', error);
         return createErrorResponse(res, 500, 'Internal server error', error.message);
+    }
+});
+
+// Google Meet integration endpoints
+app.post('/meet/start', (req, res) => {
+    try {
+        const { meetingId, meetingName } = req.body;
+        
+        if (!meetingId || !meetingName) {
+            return createErrorResponse(res, 400, 'Missing meetingId or meetingName');
+        }
+
+        const meeting = googleMeetService.startMeeting(meetingId, meetingName);
+        
+        createSuccessResponse(res, {
+            message: 'Google Meet monitoring started',
+            meeting
+        });
+    } catch (error) {
+        createErrorResponse(res, 500, 'Failed to start meeting monitoring', error.message);
+    }
+});
+
+app.post('/meet/transcript', async (req, res) => {
+    try {
+        const transcriptData = req.body;
+        
+        if (!transcriptData.transcript || !transcriptData.meetingId) {
+            return createErrorResponse(res, 400, 'Missing transcript or meetingId');
+        }
+
+        const result = await googleMeetService.processMeetTranscript(transcriptData);
+        
+        createSuccessResponse(res, result);
+    } catch (error) {
+        createErrorResponse(res, 500, 'Failed to process transcript', error.message);
+    }
+});
+
+app.post('/meet/end', (req, res) => {
+    try {
+        const summary = googleMeetService.endMeeting();
+        
+        createSuccessResponse(res, {
+            message: 'Google Meet monitoring ended',
+            summary
+        });
+    } catch (error) {
+        createErrorResponse(res, 500, 'Failed to end meeting', error.message);
+    }
+});
+
+// Trial management endpoints
+app.post('/trial/setup', async (req, res) => {
+    try {
+        const { company, plan, email } = req.body;
+        
+        if (!company || !plan || !email) {
+            return createErrorResponse(res, 400, 'Missing company, plan, or email');
+        }
+
+        const trialEnd = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+        
+        const trialAccount = {
+            id: crypto.randomBytes(16).toString('hex'),
+            company,
+            email,
+            plan,
+            trialStart: new Date(),
+            trialEnd,
+            status: 'active',
+            meetingsProcessed: 0,
+            actionItemsCaptured: 0,
+            timeSaved: 0
+        };
+
+        // Store trial account (in production, use database)
+        console.log(`✅ Trial setup for ${company}: ${trialEnd}`);
+        
+        createSuccessResponse(res, {
+            trialId: trialAccount.id,
+            company,
+            plan,
+            trialEnd,
+            message: '7-day free trial started successfully'
+        });
+    } catch (error) {
+        createErrorResponse(res, 500, 'Failed to setup trial', error.message);
+    }
+});
+
+app.post('/trial/sample-data', async (req, res) => {
+    try {
+        const { industry, meetings } = req.body;
+        
+        if (!industry || !meetings) {
+            return createErrorResponse(res, 400, 'Missing industry or meetings count');
+        }
+
+        // Generate sample meeting data
+        const sampleMeetings = [];
+        
+        for (let i = 0; i < meetings; i++) {
+            const meetingData = {
+                meetingName: `${industry} Product Development Meeting ${i + 1}`,
+                actionItems: [
+                    `Optimize ${industry} formulation for batch ${i + 1}`,
+                    `Redesign packaging for regulatory compliance`,
+                    `Source alternative raw material suppliers`,
+                    `Scale up production line capacity`
+                ]
+            };
+            
+            // Process each sample meeting
+            for (const actionItem of meetingData.actionItems) {
+                await zohoService.createTask(actionItem, 'Production');
+            }
+            
+            sampleMeetings.push(meetingData);
+        }
+
+        createSuccessResponse(res, {
+            message: `Generated ${meetings} sample meetings for ${industry}`,
+            meetings: sampleMeetings,
+            totalActionItems: meetings * 4
+        });
+    } catch (error) {
+        createErrorResponse(res, 500, 'Failed to generate sample data', error.message);
+    }
+});
+
+app.get('/trial/status/:trialId', (req, res) => {
+    try {
+        const { trialId } = req.params;
+        
+        // Mock trial status (in production, fetch from database)
+        const trialStatus = {
+            trialId,
+            daysRemaining: 5,
+            meetingsProcessed: 12,
+            actionItemsCaptured: 48,
+            timeSaved: 24, // hours
+            teamMembers: 5,
+            status: 'active'
+        };
+
+        createSuccessResponse(res, trialStatus);
+    } catch (error) {
+        createErrorResponse(res, 500, 'Failed to get trial status', error.message);
+    }
+});
+
+app.post('/trial/convert', async (req, res) => {
+    try {
+        const { trialId, plan } = req.body;
+        
+        if (!trialId || !plan) {
+            return createErrorResponse(res, 400, 'Missing trialId or plan');
+        }
+
+        // Convert trial to paid subscription
+        console.log(`✅ Converted trial ${trialId} to ${plan} plan`);
+        
+        createSuccessResponse(res, {
+            message: 'Trial converted successfully',
+            plan,
+            subscriptionId: crypto.randomBytes(16).toString('hex'),
+            nextBilling: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+        });
+    } catch (error) {
+        createErrorResponse(res, 500, 'Failed to convert trial', error.message);
+    }
+});
+
+// Production Google Meet API endpoints
+app.post('/meet/production/start', async (req, res) => {
+    try {
+        if (!googleMeetProduction) {
+            return createErrorResponse(res, 500, 'Google Meet Production Service not initialized. Please set GOOGLE_APPLICATION_CREDENTIALS');
+        }
+
+        const { meetingId, meetingName } = req.body;
+        
+        if (!meetingId || !meetingName) {
+            return createErrorResponse(res, 400, 'Missing meetingId or meetingName');
+        }
+
+        const result = await googleMeetProduction.startRealTimeTranscription(meetingId, meetingName);
+        
+        createSuccessResponse(res, result);
+    } catch (error) {
+        createErrorResponse(res, 500, 'Failed to start production Google Meet monitoring', error.message);
+    }
+});
+
+app.post('/meet/production/process-audio', async (req, res) => {
+    try {
+        if (!googleMeetProduction) {
+            return createErrorResponse(res, 500, 'Google Meet Production Service not initialized');
+        }
+
+        const { audioFilePath, meetingId, meetingName } = req.body;
+        
+        if (!audioFilePath || !meetingId || !meetingName) {
+            return createErrorResponse(res, 400, 'Missing audioFilePath, meetingId, or meetingName');
+        }
+
+        const result = await googleMeetProduction.processMeetingAudio(audioFilePath, meetingId, meetingName);
+        
+        createSuccessResponse(res, result);
+    } catch (error) {
+        createErrorResponse(res, 500, 'Failed to process meeting audio', error.message);
+    }
+});
+
+app.post('/meet/production/stop', async (req, res) => {
+    try {
+        if (!googleMeetProduction) {
+            return createErrorResponse(res, 500, 'Google Meet Production Service not initialized');
+        }
+
+        const { meetingId } = req.body;
+        
+        if (!meetingId) {
+            return createErrorResponse(res, 400, 'Missing meetingId');
+        }
+
+        const result = await googleMeetProduction.stopRealTimeTranscription(meetingId);
+        
+        createSuccessResponse(res, result);
+    } catch (error) {
+        createErrorResponse(res, 500, 'Failed to stop meeting monitoring', error.message);
+    }
+});
+
+app.get('/meet/production/status', (req, res) => {
+    try {
+        if (!googleMeetProduction) {
+            return createErrorResponse(res, 500, 'Google Meet Production Service not initialized');
+        }
+
+        const status = googleMeetProduction.getActiveMeetingsStatus();
+        
+        createSuccessResponse(res, {
+            activeMeetings: status,
+            totalActive: Object.keys(status).length
+        });
+    } catch (error) {
+        createErrorResponse(res, 500, 'Failed to get meeting status', error.message);
+    }
+});
+
+app.get('/meet/production/upcoming', async (req, res) => {
+    try {
+        if (!googleMeetProduction) {
+            return createErrorResponse(res, 500, 'Google Meet Production Service not initialized');
+        }
+
+        const result = await googleMeetProduction.getUpcomingMeetings();
+        
+        createSuccessResponse(res, result);
+    } catch (error) {
+        createErrorResponse(res, 500, 'Failed to get upcoming meetings', error.message);
+    }
+});
+
+app.post('/meet/production/create-space', async (req, res) => {
+    try {
+        if (!googleMeetProduction) {
+            return createErrorResponse(res, 500, 'Google Meet Production Service not initialized');
+        }
+
+        const result = await googleMeetProduction.createMeetSpace();
+        
+        createSuccessResponse(res, result);
+    } catch (error) {
+        createErrorResponse(res, 500, 'Failed to create Meet space', error.message);
+    }
+});
+
+// Real Google Meet API endpoints
+app.post('/meet/real/start', async (req, res) => {
+    try {
+        if (!googleMeetRealService) {
+            return createErrorResponse(res, 500, 'Google Meet Real Service not initialized. Please set GOOGLE_APPLICATION_CREDENTIALS');
+        }
+
+        const { meetingId, meetingName } = req.body;
+        
+        if (!meetingId || !meetingName) {
+            return createErrorResponse(res, 400, 'Missing meetingId or meetingName');
+        }
+
+        const result = await googleMeetRealService.startMeetingMonitoring(meetingId, meetingName);
+        
+        createSuccessResponse(res, result);
+    } catch (error) {
+        createErrorResponse(res, 500, 'Failed to start real Google Meet monitoring', error.message);
+    }
+});
+
+app.post('/meet/real/auto-start', async (req, res) => {
+    try {
+        if (!googleMeetRealService) {
+            return createErrorResponse(res, 500, 'Google Meet Real Service not initialized');
+        }
+
+        const result = await googleMeetRealService.autoStartMeetings();
+        
+        createSuccessResponse(res, result);
+    } catch (error) {
+        createErrorResponse(res, 500, 'Failed to auto-start meetings', error.message);
+    }
+});
+
+app.post('/meet/real/stop', async (req, res) => {
+    try {
+        if (!googleMeetRealService) {
+            return createErrorResponse(res, 500, 'Google Meet Real Service not initialized');
+        }
+
+        const { meetingId } = req.body;
+        
+        if (!meetingId) {
+            return createErrorResponse(res, 400, 'Missing meetingId');
+        }
+
+        const result = await googleMeetRealService.stopMeetingMonitoring(meetingId);
+        
+        createSuccessResponse(res, result);
+    } catch (error) {
+        createErrorResponse(res, 500, 'Failed to stop meeting monitoring', error.message);
+    }
+});
+
+app.get('/meet/real/status', (req, res) => {
+    try {
+        if (!googleMeetRealService) {
+            return createErrorResponse(res, 500, 'Google Meet Real Service not initialized');
+        }
+
+        const status = googleMeetRealService.getActiveMeetingsStatus();
+        
+        createSuccessResponse(res, {
+            activeMeetings: status,
+            totalActive: Object.keys(status).length
+        });
+    } catch (error) {
+        createErrorResponse(res, 500, 'Failed to get meeting status', error.message);
+    }
+});
+
+app.get('/meet/real/upcoming', async (req, res) => {
+    try {
+        if (!googleMeetRealService) {
+            return createErrorResponse(res, 500, 'Google Meet Real Service not initialized');
+        }
+
+        const result = await googleMeetRealService.getUpcomingMeetings();
+        
+        createSuccessResponse(res, result);
+    } catch (error) {
+        createErrorResponse(res, 500, 'Failed to get upcoming meetings', error.message);
+    }
+});
+
+// Demo endpoint to simulate real-time processing
+app.post('/meet/demo', async (req, res) => {
+    try {
+        console.log('🎬 Starting Google Meet demo...');
+        
+        // Start simulated real-time processing
+        const interval = googleMeetService.simulateRealTimeProcessing();
+        
+        createSuccessResponse(res, {
+            message: 'Google Meet demo started',
+            status: 'processing',
+            note: 'Check console for real-time action item extraction'
+        });
+    } catch (error) {
+        createErrorResponse(res, 500, 'Demo failed', error.message);
+    }
+});
+
+// Serve static files
+app.use(express.static('public'));
+
+// API endpoints for dashboard
+app.get('/tasks', async (req, res) => {
+    try {
+        const result = await zohoService.getTasks();
+        res.json(result);
+    } catch (error) {
+        res.status(500).json(createErrorResponse(error.message, 'GET_TASKS_ERROR'));
+    }
+});
+
+app.get('/stats', async (req, res) => {
+    try {
+        const result = await zohoService.getTaskStatistics();
+        res.json(result);
+    } catch (error) {
+        res.status(500).json(createErrorResponse(error.message, 'GET_STATS_ERROR'));
     }
 });
 

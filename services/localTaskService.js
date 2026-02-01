@@ -222,6 +222,43 @@ class LocalTaskService {
         }
     }
 
+    async getTaskStatistics() {
+        try {
+            const tasksData = await this.loadTasks();
+            const tasks = tasksData.tasks;
+
+            const stats = {
+                total: tasks.length,
+                byDepartment: {},
+                byStatus: {},
+                byPriority: {},
+                recentlyCreated: tasks.filter(task => {
+                    const createdDate = new Date(task.created);
+                    const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+                    return createdDate > weekAgo;
+                }).length
+            };
+
+            tasks.forEach(task => {
+                stats.byDepartment[task.department] = (stats.byDepartment[task.department] || 0) + 1;
+                stats.byStatus[task.status] = (stats.byStatus[task.status] || 0) + 1;
+                stats.byPriority[task.priority] = (stats.byPriority[task.priority] || 0) + 1;
+            });
+
+            return {
+                success: true,
+                statistics: stats,
+                metadata: tasksData.metadata
+            };
+
+        } catch (error) {
+            return {
+                success: false,
+                error: error.message
+            };
+        }
+    }
+
     updateDepartmentConfig(newConfig) {
         this.departmentConfig = { ...this.departmentConfig, ...newConfig };
         console.log('✅ Department configuration updated');
