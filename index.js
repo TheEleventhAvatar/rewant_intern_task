@@ -3,8 +3,8 @@ const express = require('express');
 const fs = require('fs').promises;
 const fsSync = require('fs');
 const path = require('path');
-const AIService = require('./services/aiService');
-const ZohoService = require('./services/zohoService');
+const AIService = require('./services/aiService_fallback');
+const ZohoService = require('./services/localTaskService');
 
 const app = express();
 const PORT = process.env.PORT || 3000;

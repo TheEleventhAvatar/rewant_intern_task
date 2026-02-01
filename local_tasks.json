@@ -1,0 +1,61 @@
+{
+  "tasks": [
+    {
+      "id": "c716bfd854d15d410c74ac146202033f",
+      "name": "Nutrition formulation",
+      "description": "Automated task from meeting action items. Department: Production",
+      "department": "Production",
+      "priority": "High",
+      "assignee": "Production Team",
+      "status": "To Do",
+      "created": "2026-02-01T13:07:10.451Z",
+      "updated": "2026-02-01T13:07:10.451Z",
+      "dueDate": "2026-02-08T13:07:10.451Z",
+      "source": "AI Automation Engine"
+    },
+    {
+      "id": "f73e6a33168d8d2fa1e0a76b07a1bd25",
+      "name": "Label design",
+      "description": "Automated task from meeting action items. Department: Design",
+      "department": "Design",
+      "priority": "High",
+      "assignee": "Design Team",
+      "status": "To Do",
+      "created": "2026-02-01T13:07:10.573Z",
+      "updated": "2026-02-01T13:07:10.573Z",
+      "dueDate": "2026-02-08T13:07:10.573Z",
+      "source": "AI Automation Engine"
+    },
+    {
+      "id": "1274a725a134585b717cd1378b0656f7",
+      "name": "Commercial costing",
+      "description": "Automated task from meeting action items. Department: Procurement",
+      "department": "Procurement",
+      "priority": "Medium",
+      "assignee": "Procurement Team",
+      "status": "To Do",
+      "created": "2026-02-01T13:07:10.692Z",
+      "updated": "2026-02-01T13:07:10.692Z",
+      "dueDate": "2026-02-08T13:07:10.692Z",
+      "source": "AI Automation Engine"
+    },
+    {
+      "id": "3da7990a3b455c4a11d9a32294de51ec",
+      "name": "Final cost calculation",
+      "description": "Automated task from meeting action items. Department: Procurement",
+      "department": "Procurement",
+      "priority": "Medium",
+      "assignee": "Procurement Team",
+      "status": "To Do",
+      "created": "2026-02-01T13:07:10.796Z",
+      "updated": "2026-02-01T13:07:10.797Z",
+      "dueDate": "2026-02-08T13:07:10.797Z",
+      "source": "AI Automation Engine"
+    }
+  ],
+  "metadata": {
+    "created": "2026-02-01T13:07:10.449Z",
+    "lastUpdated": "2026-02-01T13:07:10.797Z",
+    "totalTasks": 4
+  }
+}

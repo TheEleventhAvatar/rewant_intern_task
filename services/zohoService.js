@@ -11,7 +11,7 @@ class ZohoService {
             throw new Error('Zoho configuration is incomplete. Please check environment variables.');
         }
         
-        this.baseURL = 'https://api.zohosprints.com/zsapi';
+        this.baseURL = 'https://projectsapi.zoho.com/restapi';
         
         // Configure axios defaults
         this.axiosInstance = axios.create({
@@ -26,7 +26,7 @@ class ZohoService {
         this.departmentConfig = {
             'Design': {
                 priority: 'High',
-                assignee: null // Can be configured based on department
+                assignee: null
             },
             'Procurement': {
                 priority: 'Medium',
@@ -36,6 +36,13 @@ class ZohoService {
                 priority: 'High',
                 assignee: null
             }
+        };
+        
+        // Zoho priority mapping
+        this.priorityMap = {
+            'High': 'High',
+            'Medium': 'Medium', 
+            'Low': 'Low'
         };
     }
 
@@ -94,12 +101,14 @@ class ZohoService {
             const taskData = {
                 name: sanitizedTask,
                 description: `Automated task from meeting action items. Department: ${sanitizedDepartment}`,
-                priority: this.getPriorityByDepartment(sanitizedDepartment),
-                assignee: this.getAssigneeByDepartment(sanitizedDepartment),
-                status: 'To Do'
+                priority: this.priorityMap[this.getPriorityByDepartment(sanitizedDepartment)],
+                percent_complete: 0,
+                owners: [],
+                start_date: new Date().toISOString().split('T')[0],
+                end_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] // 7 days from now
             };
 
-            const url = `${this.baseURL}/team/${this.teamId}/projects/${this.projectId}/sprints/${this.sprintId}/item/`;
+            const url = `${this.baseURL}/portal/${this.teamId}/projects/${this.projectId}/tasks/`;
             
             const response = await this.axiosInstance.post(url, taskData);
 
